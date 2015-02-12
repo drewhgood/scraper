@@ -26,6 +26,29 @@ class Post
     @comments_list = []
   end
 
+  def add_comment(new_comments)
+    @comments_list << new_comments
+  end
+
+  def comments
+
+    # p @comments_list
+    @comments_list.each do |comments|
+
+      comments.each do |comment|
+        p''
+        p"#{comment.user} : #{comment.time}"
+        p"----------------------------------"
+        p comment.content
+      end
+      
+    end
+
+  end
+
+
+
+
  
 
 end

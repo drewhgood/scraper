@@ -5,8 +5,6 @@ require 'nokogiri'
 
 class Comment
 
-
-
   attr_accessor :user, :time, :content
 
   def initialize(user, time, content) 
@@ -16,7 +14,8 @@ class Comment
   #post_id = post it belongs to
   end
 
-  
+
+
 
   
 
@@ -30,5 +29,3 @@ class Comment
 
 end
 
-
-p 
