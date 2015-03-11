@@ -1,95 +1,73 @@
-require './post'
-require './comment'
-require 'nokogiri'
-require 'open-uri'
+    require './post'
+    require './comment'
+    require 'nokogiri'
+    require 'open-uri'
+    require 'colorize'
+    require 'pry'
 
-  def capture(doc)
-    # url = doc.search('.subtext > span:first-child').map { |span| span.inner_text}
-    # points =  doc.search('.subtext > a:nth-child(3)').map {|link| link['href'] }
-    # title = doc.search('.title > a:first-child').map { |link| link.inner_text}
-    # item_id = doc.search('.title > a:first-child').map { |link| link['href']}
-    
-    # new_post = Post.new(title, url, points, item_id)
-    # p new_post.comments_list = get_coments(doc)
+doc = Nokogiri::HTML(File.open('post.html'))
 
-    # @url  = url
-    @points = get_points(doc)
-    @item_id = get_item_id
-    @title = get_title(doc) 
-    @new_post = Post.new(@title, @item_id, @points, @item_id)
-    all_c = get_comments(doc) 
-    @new_post.comments  << all_c
 
-    @new_post.comments
+def get_title(doc)
+  string = doc.search('.title > a').map { |link| link.inner_text}
+  s = string[0].to_s
+  target = s.match('Show HN: Velocity.js \u00E2\u0080\u0093 ').to_s
+  s.gsub(target, '')
+end
 
+def get_id(doc)
+  doc.search('.subtext > a:nth-child(3)').map {|link| link['href'] }[0]
+end
+
+def get_points(doc)
+  doc.search('.subtext > span:first-child').map { |span| span.inner_text}[0]
+end
+
+def get_link(doc)
+  doc.search('.title > a').map { |link| link['href']}
+end
+
+def get_content(doc)
+  doc.search('.comment > font:first-child').map { |font| font.inner_text}
+end
+
+def create_post(doc)
+  title = get_title(doc)
+  id = get_id(doc)
+  points = get_points(doc)
+  link = get_link(doc)
+  content = get_content(doc)
+  comments = create_comments(doc)
+
+  @newby = Post.new(title, id, points, link, content, comments)
+end
+
+def create_comments(doc)
+  comments_list = []
+  users = get_comments_users(doc)
+  comments = get_comments_content(doc)
+  length = users.length
+
+  length.times do |i|
+    comments_list << Comment.new(users[i], comments[i])
   end
-
-  
-  def get_points(doc)
-    doc.css('span.score').text
-  end
-  
+  comments_list
+end
 
 
-  def get_item_id()
-    id = 'https://news.ycombinator.com/item?id=7663775'.scan(/(\d.+)/)
-    #will be passed via url when file not local
-  end
+def get_comments_users(doc)
+  doc.css('.comhead > a:first-child').map{|user| user.inner_text}
+end
 
+def get_comments_content(doc)
+  doc.css('.comment').map{|user| user.inner_text}
+end
 
-
-  def get_title(doc)
-     doc.search('.title > a:first-child').map { |link| link.inner_text}
-  end
-
-
-
-  def get_users(doc)
-    doc.css('.comhead > a:first-child').map{|user| user.inner_text}
-
-  end
-
-
-
-  def get_times(doc)
-    doc.css('.comhead > a:nth-child(2)').map{|user| user.inner_text} 
-  end
-
-
-
-  def get_content(doc)
-    doc.search('.comment > font:first-child').map { |font| font.inner_text}
-  end
-
-
-
-  def get_comments(doc)
-    comments = []
-    user = get_users(doc)
-    time = get_times(doc)
-    content = get_content(doc)
-
-    l = user.length 
-    
-    l.times do |i|
-    comments << Comment.new(user[i], time[i], content[i])
-    end
-    comments
-  end
-
-
-  p @url = ARGV[0]
-  p @site =  open(@url)
-  doc = Nokogiri::HTML(File.open(@site))
-
-  capture(doc)
+create_post(doc)
 
 
 
 
 
-
-
-
-
+# p doc.search('.comment > font:first-child').map { |font| font.inner_text}
 
