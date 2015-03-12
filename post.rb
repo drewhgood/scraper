@@ -33,6 +33,14 @@ class Post
     end
   end
 
+  def newest_comment
+    spacer
+    comment = comments.last
+    puts "User: #{comment.user}".colorize(:red)
+    puts "Posted: #{comment.time}".colorize(:blue)
+    puts "#{comment.content}"
+  end
+
 end
 
 

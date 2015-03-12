@@ -54,7 +54,7 @@ def create_comments(doc)
 end
 
 def get_comments_times(doc)
-    doc.css('.comhead > a:nth-child(2)').map{|user| user.inner_text} 
+  doc.css('.comhead > a:nth-child(2)').map{|user| user.inner_text} 
 end
 
 def get_comments_users(doc)
@@ -66,7 +66,7 @@ def get_comments_content(doc)
 end
 
 def options
-  puts "More Information Available | Choose from the following options:\n comments - show post comments\n  content - show full post content\n     exit - exit the program".colorize(:yellow)
+  puts "More Information Available | Choose from the following options:\n comments - show post comments\n  content - show full post content\n   newest - show most recent comment\n     exit - exit the program".colorize(:yellow)
 end
 
 def spacer
@@ -75,7 +75,7 @@ end
 
 # doc = Nokogiri::HTML(File.open('post.html'))
 def status(url)
-puts "Scraped: #{@url}".colorize(:green)
+  puts "Scraped: #{@url}".colorize(:green)
 end
 
 
@@ -102,8 +102,10 @@ def repl
       @newest_post.all_comments
     elsif response == 'content'
       @newest_post.show
+    elsif response == 'newest'
+      @newest_post.newest_comment
     elsif response == 'exit'
-      puts "Thank you for using Scraper"
+      puts "Thank you for using Scraper".colorize(:green)
       @scraping = false 
     else
       puts "Not a valid option"
