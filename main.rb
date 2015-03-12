@@ -78,6 +78,10 @@ def status(url)
   puts "Scraped: #{@url}".colorize(:green)
 end
 
+def goodbye
+  puts "Thank you for using Scraper".colorize(:green)
+end
+
 
 
 def run
@@ -105,7 +109,7 @@ def repl
     elsif response == 'newest'
       @newest_post.newest_comment
     elsif response == 'exit'
-      puts "Thank you for using Scraper".colorize(:green)
+      goodbye
       @scraping = false 
     else
       puts "Not a valid option"
